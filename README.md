@@ -24,12 +24,15 @@ npx truffle compile
 ```
 > Note: the `npx` command [comes with npm](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) as of npm@5.2.0 version.
 
-### 4. Start the web server
+### 4. Open application
+Deployed app :
+[https://token-vesting-ui.netlify.com](https://token-vesting-ui.netlify.com)
+Or you can run in local
 ```
 npm start
 ```
 
-### 5. (optional) Deploy your own vesting contract
+### 5. Deploy your own vesting contract
 If you don't have a vesting contract to try this out, deploy your own easily:
 
 #### i. Make sure you are connected to an ethereum node. You can use [testrpc](https://github.com/ethereumjs/testrpc) to simulate one:
@@ -37,24 +40,21 @@ If you don't have a vesting contract to try this out, deploy your own easily:
 npx testrpc
 ```
 
-#### ii. Deploy the contracts:
+#### ii. Edit your vesting configuration
+
+Edit the file `migrations/2_deploy_contracts.js` with the correct beneficiary, start date, duration and cliff. 
+Revocable allow contract creator to withdraw the not yet released tokens.
+
+#### iii. Deploy the contracts:
 ```
 npx truffle migrate
 ```
 
-You should get a `TokenVesting` and a `SimpleToken` address:
+You should get a `TokenVesting` address:
 ```
 Compiling ./contracts/MyVesting.sol...
-Compiling zeppelin-solidity/contracts/examples/SimpleToken.sol...
 Compiling zeppelin-solidity/contracts/math/Math.sol...
-Compiling zeppelin-solidity/contracts/math/SafeMath.sol...
-Compiling zeppelin-solidity/contracts/ownership/Ownable.sol...
-Compiling zeppelin-solidity/contracts/token/BasicToken.sol...
-Compiling zeppelin-solidity/contracts/token/ERC20.sol...
-Compiling zeppelin-solidity/contracts/token/ERC20Basic.sol...
-Compiling zeppelin-solidity/contracts/token/SafeERC20.sol...
-Compiling zeppelin-solidity/contracts/token/StandardToken.sol...
-Compiling zeppelin-solidity/contracts/token/TokenVesting.sol...
+[...]
 Writing artifacts to ./build/contracts
 
 Using network 'development'.
@@ -70,20 +70,38 @@ Running migration: 2_deploy_contracts.js
   Deploying TokenVesting...
   ... 0x100a31e8a48e357ea26b3720c573a56e2bb37a86fbba5953c88206f68f00c590
   TokenVesting: 0x5c95714bb1e0f0b41548d1437f1fcb07ea1c23f8
-  Deploying SimpleToken...
-  ... 0xe75b5355147e1fe252801d391da3d14368b6343b8313ba4838e4c62330a72184
-  SimpleToken: 0x4500ab575934d13be4a75023508ac602a001d409
 Saving successful migration to network...
   ... 0x79289cc9b1c8053e7cc9f218bd6edffae057768d85a0a10ad9159334b678fdd6
 Saving artifacts...
 
 ```
 
-These are our addresses:
+These are our address:
 ```
 TokenVesting: 0x5c95714bb1e0f0b41548d1437f1fcb07ea1c23f8
-SimpleToken: 0x4500ab575934d13be4a75023508ac602a001d409
 ```
+
+To deploy on test network or mainnetwork, check the truffle.js file. 
+You can either use a mnemonic that you put inside a `.env` file along with an infura API key
+You can also deploy to mainnet with a ledger device.
+
+```
+npx truffle migrate --network mainnet_ledger
+```
+
 
 ### 6. Ready!
 Go to `http://localhost:3000/<token-vesting-address>/<erc20-token-address>` and interact with the contract!
+
+
+### 7. Interact with the contract
+
+You must have Metamask open and configured in your browser to be able to interact with the contract.
+
+- As beneficiary:
+    You can release your coin when it's time. Assure that the account selected in metamast is the beneficiary one, then release the token by accepting the transaction. 
+
+- As contract owner:
+    If contract is revocable, the contract owner can withdraw unreleased token. Also needs to select the owner account in metamask.
+    
+If you don't want to use metamask or this interface, you can use myetherwallet. The ABI is inside `contract/build/TokenVesting.json` file.
