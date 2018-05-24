@@ -1,11 +1,26 @@
-const TokenVesting = artifacts.require("TokenVesting")
+const moment = require('moment');
+const TokenVesting = artifacts.require("TokenVesting");
 
-module.exports = function(deployer) {
-  const beneficiary = "0x1E6876a6C2757de611c9F12B23211dBaBd1C9028"
+function deployContract(deployer) {
 
-  const start = 1450656000
-  const cliff = 31536000 // ~1 yr
-  const duration = 126144000 // ~4yrs
+  const beneficiary = "0x7b4f7ebf4fa6a9ce2bd69839abea29d65c1d9b23";
 
-  deployer.deploy(TokenVesting, beneficiary, start, cliff, duration, true)
+  const startDate = moment('2018-05-24T16:05:00.000Z');
+
+  const duration = moment.duration(6, 'months');
+  const cliff = moment.duration(0, 'months');
+
+  const revocable = true;
+
+  const startUnix = startDate.unix();
+  const durationUnix = duration.asSeconds();
+  const cliffUnix = cliff.asSeconds();
+
+  //console.log(startUnix, durationUnix, cliffUnix);
+
+  deployer.deploy(TokenVesting, beneficiary, startUnix, cliffUnix, durationUnix, revocable || false);
+
 }
+
+module.exports = deployContract;
+
