@@ -6,10 +6,11 @@ require('babel-register');
 
 const infuraProvider = network => new HDWalletProvider(
     process.env.MNEMONIC || '',
-    `https://${network}.infura.io/${process.env.INFURA_API_KEY}`
+    `https://${network}.infura.io/${process.env.INFURA_API_KEY}`,
+    0
 );
 
-const ledgerProvider = (network, networkId = '42') => {
+const ledgerProvider = (network, networkId = 42) => {
     const ledgerOptions = {
         networkId,
         //path: "44'/60'/0'/0",
@@ -48,7 +49,7 @@ module.exports = {
         mainnet: {
             provider: infuraProvider('mainnet'),
             network_id: 1,
-            gasPrice: 15000000000,
+            gasPrice: 12000000000,
         },
         mainnet_ledger: {
             provider: ledgerProvider('mainnet', 1),
